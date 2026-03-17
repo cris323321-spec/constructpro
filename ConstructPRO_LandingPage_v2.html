@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ConstructPRO — Calculadora Profesional de Construcción</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #D4A843;
+  --gold2: #F0C060;
+  --orange: #E8521A;
+  --bg: #07080A;
+  --bg2: #0E1014;
+  --bg3: #151820;
+  --border: #1E2128;
+  --border2: #2A2E3A;
+  --text: #E8EAF0;
+  --text2: #8A909F;
+  --text3: #4A5060;
+  --green: #22C55E;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  overflow-x: hidden;
+}
+
+/* GRAIN OVERLAY */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ─── HERO ─── */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  padding: 80px 40px 60px;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 70% 50%, rgba(212,168,67,0.07) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 40% at 20% 80%, rgba(232,82,26,0.05) 0%, transparent 60%);
+}
+
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(212,168,67,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(212,168,67,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 80%);
+}
+
+.hero-inner {
+  position: relative;
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(212,168,67,0.1);
+  border: 1px solid rgba(212,168,67,0.25);
+  border-radius: 100px;
+  padding: 6px 16px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 32px;
+  animation: fadeUp 0.6s ease both;
+}
+
+.hero-badge::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+.hero-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(64px, 10vw, 130px);
+  line-height: 0.9;
+  letter-spacing: 2px;
+  color: #fff;
+  margin-bottom: 8px;
+  animation: fadeUp 0.6s 0.1s ease both;
+}
+
+.hero-title .gold { color: var(--gold); }
+.hero-title .stroke {
+  -webkit-text-stroke: 2px rgba(255,255,255,0.2);
+  color: transparent;
+}
+
+.hero-subtitle {
+  font-size: clamp(16px, 2.5vw, 22px);
+  color: var(--text2);
+  font-weight: 300;
+  max-width: 600px;
+  line-height: 1.6;
+  margin-bottom: 48px;
+  animation: fadeUp 0.6s 0.2s ease both;
+}
+
+.hero-subtitle strong { color: var(--text); font-weight: 600; }
+
+.hero-cta-group {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  animation: fadeUp 0.6s 0.3s ease both;
+}
+
+.btn-buy {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, var(--gold), var(--orange));
+  color: #000;
+  font-family: 'Outfit', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 18px 36px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  letter-spacing: 0.5px;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-buy::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--gold2), var(--gold));
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.btn-buy:hover::before { opacity: 1; }
+.btn-buy:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(212,168,67,0.35); }
+.btn-buy span { position: relative; }
+
+.price-tag {
+  display: flex;
+  flex-direction: column;
+}
+
+.price-main {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 28px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.price-label {
+  font-size: 11px;
+  color: var(--text3);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.price-old {
+  font-size: 13px;
+  color: var(--text3);
+  text-decoration: line-through;
+}
+
+.hero-stats {
+  display: flex;
+  gap: 40px;
+  margin-top: 64px;
+  padding-top: 40px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+  animation: fadeUp 0.6s 0.4s ease both;
+}
+
+.hero-stat-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 42px;
+  color: var(--gold);
+  line-height: 1;
+}
+
+.hero-stat-label {
+  font-size: 12px;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-top: 4px;
+}
+
+/* ─── FLOATING CARD ─── */
+.hero-card {
+  position: absolute;
+  right: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 16px;
+  padding: 28px;
+  width: 320px;
+  animation: fadeUp 0.6s 0.5s ease both;
+  display: none;
+}
+
+@media (min-width: 1100px) {
+  .hero-card { display: block; }
+  .hero-inner { max-width: 760px; }
+}
+
+.hero-card-title {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 16px;
+}
+
+.calc-preview-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.calc-preview-item:last-child { border-bottom: none; }
+
+.calc-preview-label {
+  font-size: 13px;
+  color: var(--text2);
+}
+
+.calc-preview-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gold);
+}
+
+.calc-preview-bar {
+  width: 100%;
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  margin-top: 12px;
+  overflow: hidden;
+}
+
+.calc-preview-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), var(--orange));
+  border-radius: 2px;
+  animation: fillBar 2s 1s ease both;
+}
+
+@keyframes fillBar {
+  from { width: 0%; }
+}
+
+/* ─── WHAT IS IT ─── */
+.section {
+  padding: 100px 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-label::before {
+  content: '';
+  width: 24px;
+  height: 2px;
+  background: var(--gold);
+}
+
+.section-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(40px, 6vw, 72px);
+  line-height: 1;
+  color: #fff;
+  margin-bottom: 20px;
+}
+
+.section-title .gold { color: var(--gold); }
+
+.section-body {
+  font-size: 17px;
+  color: var(--text2);
+  line-height: 1.7;
+  max-width: 680px;
+}
+
+/* ─── MODULES ─── */
+.modules-divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border2), transparent);
+  margin: 0 40px;
+}
+
+.modules-section {
+  padding: 80px 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.modules-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin-top: 48px;
+}
+
+.module-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 28px;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.module-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold), var(--orange));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s;
+}
+
+.module-card:hover { border-color: var(--border2); transform: translateY(-4px); }
+.module-card:hover::before { transform: scaleX(1); }
+
+.module-icon {
+  font-size: 32px;
+  margin-bottom: 16px;
+}
+
+.module-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 1px;
+  color: #fff;
+  margin-bottom: 8px;
+}
+
+.module-desc {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.6;
+}
+
+.module-features {
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.module-tag {
+  background: rgba(212,168,67,0.08);
+  border: 1px solid rgba(212,168,67,0.15);
+  color: var(--gold);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+/* ─── PROBLEM/SOLUTION ─── */
+.contrast-section {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 80px 40px;
+}
+
+.contrast-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .contrast-inner { grid-template-columns: 1fr; gap: 40px; }
+}
+
+.contrast-col-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  letter-spacing: 2px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.contrast-item {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 18px;
+  align-items: flex-start;
+}
+
+.contrast-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.icon-bad { background: rgba(239,68,68,0.1); color: #EF4444; }
+.icon-good { background: rgba(34,197,94,0.1); color: var(--green); }
+
+.contrast-text {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.5;
+}
+
+.contrast-text strong { color: var(--text); }
+
+/* ─── FOR WHO ─── */
+.audience-section {
+  padding: 80px 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.audience-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 48px;
+}
+
+.audience-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px 20px;
+  text-align: center;
+  transition: all 0.3s;
+}
+
+.audience-card:hover {
+  border-color: rgba(212,168,67,0.3);
+  background: rgba(212,168,67,0.04);
+}
+
+.audience-emoji { font-size: 36px; margin-bottom: 12px; }
+
+.audience-name {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.audience-desc {
+  font-size: 12px;
+  color: var(--text3);
+  line-height: 1.5;
+}
+
+/* ─── HOW TO BUY ─── */
+.steps-section {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  padding: 80px 40px;
+}
+
+.steps-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0;
+  margin-top: 60px;
+  position: relative;
+}
+
+.steps-grid::before {
+  content: '';
+  position: absolute;
+  top: 28px;
+  left: 15%;
+  right: 15%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border2), var(--border2), transparent);
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 20px;
+  position: relative;
+}
+
+.step-num {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold), var(--orange));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 24px;
+  color: #000;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.step-title {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.step-desc {
+  font-size: 13px;
+  color: var(--text3);
+  line-height: 1.5;
+  text-align: center;
+}
+
+/* ─── PRICING ─── */
+.pricing-section {
+  padding: 100px 40px;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.pricing-card {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 20px;
+  padding: 48px;
+  margin-top: 48px;
+  position: relative;
+  overflow: hidden;
+}
+
+.pricing-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--gold), var(--orange));
+}
+
+.pricing-badge {
+  display: inline-block;
+  background: rgba(34,197,94,0.1);
+  border: 1px solid rgba(34,197,94,0.25);
+  color: var(--green);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 6px 16px;
+  border-radius: 100px;
+  margin-bottom: 28px;
+}
+
+.pricing-price {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 96px;
+  line-height: 1;
+  color: #fff;
+  letter-spacing: 2px;
+}
+
+.pricing-price sup {
+  font-size: 40px;
+  vertical-align: top;
+  margin-top: 18px;
+  display: inline-block;
+  color: var(--gold);
+}
+
+.pricing-currency {
+  font-size: 22px;
+  color: var(--text2);
+  margin-bottom: 8px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 300;
+}
+
+.pricing-desc {
+  font-size: 14px;
+  color: var(--text3);
+  margin-bottom: 36px;
+}
+
+.pricing-includes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 40px;
+  text-align: left;
+}
+
+@media (max-width: 500px) {
+  .pricing-includes { grid-template-columns: 1fr; }
+}
+
+.pricing-include-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--text2);
+}
+
+.pricing-include-item::before {
+  content: '✓';
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(34,197,94,0.1);
+  color: var(--green);
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-weight: 700;
+}
+
+.btn-buy-large {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: linear-gradient(135deg, var(--gold), var(--orange));
+  color: #000;
+  font-family: 'Outfit', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  padding: 20px 48px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  width: 100%;
+  transition: all 0.3s;
+  letter-spacing: 0.5px;
+}
+
+.btn-buy-large:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 48px rgba(212,168,67,0.3);
+}
+
+.pricing-guarantee {
+  margin-top: 20px;
+  font-size: 12px;
+  color: var(--text3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+/* ─── FAQ ─── */
+.faq-section {
+  padding: 80px 40px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.faq-item {
+  border-bottom: 1px solid var(--border);
+  padding: 24px 0;
+}
+
+.faq-q {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 10px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.faq-q::before {
+  content: 'P';
+  background: rgba(212,168,67,0.15);
+  color: var(--gold);
+  font-size: 11px;
+  font-weight: 700;
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.faq-a {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.6;
+  padding-left: 34px;
+}
+
+/* ─── FOOTER CTA ─── */
+.footer-cta {
+  background: linear-gradient(135deg, rgba(212,168,67,0.08), rgba(232,82,26,0.05));
+  border-top: 1px solid var(--border);
+  padding: 80px 40px;
+  text-align: center;
+}
+
+.footer-cta-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(40px, 6vw, 72px);
+  color: #fff;
+  margin-bottom: 16px;
+}
+
+.footer-cta-title .gold { color: var(--gold); }
+
+.footer-cta-sub {
+  font-size: 16px;
+  color: var(--text2);
+  margin-bottom: 40px;
+}
+
+footer {
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  padding: 32px 40px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text3);
+}
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── MOBILE ─── */
+@media (max-width: 600px) {
+  .hero { padding: 60px 20px 40px; }
+  .section, .modules-section, .audience-section, .faq-section { padding: 60px 20px; }
+  .contrast-section, .steps-section { padding: 60px 20px; }
+  .pricing-section { padding: 60px 20px; }
+  .pricing-card { padding: 32px 24px; }
+  .pricing-price { font-size: 72px; }
+  .steps-grid::before { display: none; }
+  .hero-stats { gap: 24px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════ HERO ══════════ -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+
+  <div class="hero-inner">
+    <div class="hero-badge">🏗️ Herramienta Profesional de Construcción</div>
+
+    <h1 class="hero-title">
+      CONSTRUCT<span class="gold">PRO</span><br>
+      <span class="stroke">CALCULA</span>
+    </h1>
+
+    <p class="hero-subtitle">
+      La calculadora profesional que todo constructor, maestro mayor y dueño de obra necesita.<br>
+      <strong>Materiales, presupuestos, cronograma y visualización 3D</strong> — todo en un solo lugar.
+    </p>
+
+    <div class="hero-cta-group">
+      <a href="#comprar" class="btn-buy">
+        <span>🛒 Comprar Ahora</span>
+      </a>
+      <div class="price-tag">
+        <div class="price-main">USD 17</div>
+        <div class="price-label">Pago único · Sin cuotas</div>
+        <div class="price-old">Precio lanzamiento</div>
+      </div>
+    </div>
+
+    <div class="hero-stats">
+      <div>
+        <div class="hero-stat-num">10+</div>
+        <div class="hero-stat-label">Módulos incluidos</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">100%</div>
+        <div class="hero-stat-label">En español</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">IA</div>
+        <div class="hero-stat-label">Asistente incluido</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">PWA</div>
+        <div class="hero-stat-label">Funciona en celular</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating preview card -->
+  <div class="hero-card">
+    <div class="hero-card-title">🧮 Ejemplo de Cálculo en Vivo</div>
+    <div class="calc-preview-item">
+      <span class="calc-preview-label">Superficie total</span>
+      <span class="calc-preview-value">80 m²</span>
+    </div>
+    <div class="calc-preview-item">
+      <span class="calc-preview-label">Ladrillos</span>
+      <span class="calc-preview-value">4.800 u.</span>
+    </div>
+    <div class="calc-preview-item">
+      <span class="calc-preview-label">Cemento</span>
+      <span class="calc-preview-value">48 bolsas</span>
+    </div>
+    <div class="calc-preview-item">
+      <span class="calc-preview-label">Hierro</span>
+      <span class="calc-preview-value">320 kg</span>
+    </div>
+    <div class="calc-preview-item">
+      <span class="calc-preview-label">Costo estimado</span>
+      <span class="calc-preview-value" style="color: var(--green)">$4.200.000</span>
+    </div>
+    <div class="calc-preview-bar">
+      <div class="calc-preview-fill" style="width: 78%"></div>
+    </div>
+    <div style="font-size: 11px; color: var(--text3); margin-top: 8px; text-align: right;">Progreso de obra: 78%</div>
+  </div>
+</section>
+
+<!-- ══════════ QUÉ ES ══════════ -->
+<section class="section reveal">
+  <div class="section-label">¿Qué es ConstructPRO?</div>
+  <h2 class="section-title">EL PROBLEMA QUE<br><span class="gold">TODOS CONOCEMOS</span></h2>
+  <p class="section-body">
+    ¿Cuántas veces comenzaste una obra y te quedaste corto de materiales? ¿O compraste de más y perdiste plata?
+    ¿Cuánto tiempo perdiste haciendo cuentas en papel o en hojas de Excel desorganizadas?<br><br>
+    <strong>ConstructPRO es la solución.</strong> Una herramienta profesional que calcula todo automáticamente: ladrillos, cemento, hierro, arena, electricidad, plomería, pintura y mucho más. En segundos.
+  </p>
+</section>
+
+<div class="modules-divider"></div>
+
+<!-- ══════════ MÓDULOS ══════════ -->
+<section class="modules-section reveal">
+  <div class="section-label">Todo incluido</div>
+  <h2 class="section-title">10 MÓDULOS<br><span class="gold">PROFESIONALES</span></h2>
+
+  <div class="modules-grid">
+    <div class="module-card">
+      <div class="module-icon">🏠</div>
+      <div class="module-name">Cimientos y Estructura</div>
+      <div class="module-desc">Calcula hormigón, hierro y encofrados para fundaciones y columnas con medidas exactas.</div>
+      <div class="module-features">
+        <span class="module-tag">Zapatas</span>
+        <span class="module-tag">Vigas</span>
+        <span class="module-tag">Columnas</span>
+      </div>
+    </div>
+
+    <div class="module-card">
+      <div class="module-icon">🧱</div>
+      <div class="module-name">Mampostería</div>
+      <div class="module-desc">Cantidad exacta de ladrillos, mortero y bloques para paredes de cualquier tipo.</div>
+      <div class="module-features">
+        <span class="module-tag">Ladrillo común</span>
+        <span class="module-tag">Cerámico</span>
+        <span class="module-tag">Bloques</span>
+      </div>
+    </div>
+
+    <div class="module-card">
+      <div class="module-icon">🏗️</div>
+      <div class="module-name">Losas y Techos</div>
+      <div class="module-desc">Cálculo de losa maciza, nervurada, steel deck y techos de chapa con materiales y costos.</div>
+      <div class="module-features">
+        <span class="module-tag">Losa maciza</span>
+        <span class="module-tag">Nervurada</span>
+        <span class="module-tag">Steel deck</span>
+      </div>
+    </div>
+
+    <div class="module-card">
+      <div class="module-icon">⚡</div>
+      <div class="module-name">Instalación Eléctrica</div>
+      <div class="module-desc">Cables, tableros, protecciones y circuitos. Todo calculado por ambiente y consumo.</div>
+      <div class="module-features">
+        <span class="module-tag">Cables mm²</span>
+        <span class="module-tag">Tablero</span>
+        <span class="module-tag">Circuitos</span>
+      </div>
+    </div>
+
+    <div class="module-card">
+      <div class="module-icon">🚿</div>
+      <div class="module-name">Instalación Sanitaria</div>
+      <div class="module-desc">Desagües, alimentación, cámaras sépticas y todo el sistema sanitario completo.</div>
+      <div class="module-features">
+        <span class="module-tag">Agua fría/caliente</span>
+        <span class="module-tag">Desagüe</span>
+        <span class="module-tag">Cloaca</span>
+      </div>
+    </div>
+
+    <div class="module-card">
+      <div class="module-icon">🎨</div>
+      <div class="module-name">Terminaciones y Pintura</div>
+      <div class="module-desc">Revoques, cerámicos, porcelanato y pintura calculados metro a metro sin desperdicios.</div>
+      <div class="module-features">
+        <span class="module-tag">Revoque</span>
+        <span class="module-tag">Porcelanato</span>
+        <span class="module-tag">Látex</span>
+      </div>
+    </div>
+
+    <div class="module-card">
+      <div class="module-icon">💰</div>
+      <div class="module-name">Presupuesto Total</div>
+      <div class="module-desc">Presupuesto completo de la obra con desglose por rubro, mano de obra y materiales.</div>
+      <div class="module-features">
+        <span class="module-tag">Materiales</span>
+        <span class="module-tag">Mano de obra</span>
+        <span class="module-tag">Exportar PDF</span>
+      </div>
+    </div>
+
+    <div class="module-card">
+      <div class="module-icon">📅</div>
+      <div class="module-name">Cronograma de Obra</div>
+      <div class="module-desc">Planificación automática por etapas con fechas, duraciones y recursos necesarios.</div>
+      <div class="module-features">
+        <span class="module-tag">Diagrama Gantt</span>
+        <span class="module-tag">Etapas</span>
+        <span class="module-tag">Recursos</span>
+      </div>
+    </div>
+
+    <div class="module-card">
+      <div class="module-icon">🧠</div>
+      <div class="module-name">Guía técnica</div>
+      <div class="module-desc">Preguntale cualquier cosa sobre tu obra. Respuestas técnicas al instante en español.</div>
+      <div class="module-features">
+        <span class="module-tag">Guías técnicas</span>
+        <span class="module-tag">Siempre disponible</span>
+        <span class="module-tag">En español</span>
+      </div>
+    </div>
+
+    <div class="module-card">
+      <div class="module-icon">🔍</div>
+      <div class="module-name">Guía de Errores Comunes</div>
+      <div class="module-desc">Los 10 errores más costosos en construcción y cómo evitarlos. Ahorrás tiempo y plata.</div>
+      <div class="module-features">
+        <span class="module-tag">Humedad</span>
+        <span class="module-tag">Estructuras</span>
+        <span class="module-tag">Instalaciones</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ CONTRAST ══════════ -->
+<div class="contrast-section reveal">
+  <div class="contrast-inner">
+    <div>
+      <div class="contrast-col-title" style="color: #EF4444;">❌ Sin ConstructPRO</div>
+      <div class="contrast-item">
+        <div class="contrast-icon icon-bad">✗</div>
+        <div class="contrast-text"><strong>Calculás a ojo</strong> y siempre te sobra o te falta material</div>
+      </div>
+      <div class="contrast-item">
+        <div class="contrast-icon icon-bad">✗</div>
+        <div class="contrast-text"><strong>Perdés horas</strong> haciendo cuentas en papel o Excel</div>
+      </div>
+      <div class="contrast-item">
+        <div class="contrast-icon icon-bad">✗</div>
+        <div class="contrast-text"><strong>Los presupuestos son imprecisos</strong> y generan conflictos con el cliente</div>
+      </div>
+      <div class="contrast-item">
+        <div class="contrast-icon icon-bad">✗</div>
+        <div class="contrast-text"><strong>Errores en la obra</strong> que cuestan 10 veces más arreglarlos después</div>
+      </div>
+      <div class="contrast-item">
+        <div class="contrast-icon icon-bad">✗</div>
+        <div class="contrast-text"><strong>Sin cronograma</strong>, la obra se desorganiza y se atrasa</div>
+      </div>
+    </div>
+
+    <div>
+      <div class="contrast-col-title" style="color: var(--green);">✅ Con ConstructPRO</div>
+      <div class="contrast-item">
+        <div class="contrast-icon icon-good">✓</div>
+        <div class="contrast-text"><strong>Cantidades exactas</strong> de cada material con un solo clic</div>
+      </div>
+      <div class="contrast-item">
+        <div class="contrast-icon icon-good">✓</div>
+        <div class="contrast-text"><strong>Presupuesto listo en minutos</strong>, profesional y detallado</div>
+      </div>
+      <div class="contrast-item">
+        <div class="contrast-icon icon-good">✓</div>
+        <div class="contrast-text"><strong>Cronograma automático</strong> por etapas para no perder el hilo</div>
+      </div>
+      <div class="contrast-item">
+        <div class="contrast-icon icon-good">✓</div>
+        <div class="contrast-text"><strong>Guía técnica</strong> que responde tus dudas técnicas al instante</div>
+      </div>
+      <div class="contrast-item">
+        <div class="contrast-icon icon-good">✓</div>
+        <div class="contrast-text"><strong>Guía de errores comunes</strong> para evitar problemas costosos</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ PARA QUIÉN ══════════ -->
+<section class="audience-section reveal">
+  <div class="section-label">¿Para quién es?</div>
+  <h2 class="section-title">HECHA PARA<br><span class="gold">GENTE DE OBRA</span></h2>
+
+  <div class="audience-grid">
+    <div class="audience-card">
+      <div class="audience-emoji">👷</div>
+      <div class="audience-name">Constructores</div>
+      <div class="audience-desc">Para quienes hacen casas y necesitan calcular rápido y bien</div>
+    </div>
+    <div class="audience-card">
+      <div class="audience-emoji">📐</div>
+      <div class="audience-name">Maestros Mayores</div>
+      <div class="audience-desc">Presupuestos profesionales para clientes exigentes</div>
+    </div>
+    <div class="audience-card">
+      <div class="audience-emoji">🏡</div>
+      <div class="audience-name">Dueños de Obra</div>
+      <div class="audience-desc">Para no depender de terceros y entender qué se gasta</div>
+    </div>
+    <div class="audience-card">
+      <div class="audience-emoji">🎓</div>
+      <div class="audience-name">Estudiantes</div>
+      <div class="audience-desc">Ingeniería, arquitectura y construcción — herramienta de estudio</div>
+    </div>
+    <div class="audience-card">
+      <div class="audience-emoji">🏢</div>
+      <div class="audience-name">Empresas Constructoras</div>
+      <div class="audience-desc">Agilizá los presupuestos del equipo con una sola herramienta</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ CÓMO COMPRAR ══════════ -->
+<section class="steps-section reveal">
+  <div class="steps-inner">
+    <div class="section-label" style="justify-content: center;">Proceso simple</div>
+    <h2 class="section-title">¿CÓMO <span class="gold">FUNCIONA</span>?</h2>
+
+    <div class="steps-grid">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-title">Hacés el pago</div>
+        <div class="step-desc">Pago seguro por Mercado Pago. Se acepta tarjeta, débito o saldo MP.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-title">Recibís el link</div>
+        <div class="step-desc">Inmediatamente te llega el acceso directo a la calculadora.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-title">Lo usás siempre</div>
+        <div class="step-desc">Funciona en celular y PC. Podés instalarlo como app. Acceso de por vida.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ PRECIO ══════════ -->
+<section class="pricing-section reveal" id="comprar">
+  <div class="section-label" style="justify-content: center;">Precio de lanzamiento</div>
+  <h2 class="section-title">UNA SOLA<br><span class="gold">INVERSIÓN</span></h2>
+
+  <div class="pricing-card">
+    <div class="pricing-badge">✓ Acceso de por vida incluido</div>
+
+    <div class="pricing-price"><sup>USD</sup>17</div>
+    <div class="pricing-currency">Pago único — Sin suscripción — Sin cuotas</div>
+    <div class="pricing-desc">Precio especial de lanzamiento. Podés pagar con Mercado Pago.</div>
+
+    <div class="pricing-includes">
+      <div class="pricing-include-item">10 módulos profesionales</div>
+      <div class="pricing-include-item">Guía técnica profesional</div>
+      <div class="pricing-include-item">Funciona en celular y PC</div>
+      <div class="pricing-include-item">Instalable como app (PWA)</div>
+      <div class="pricing-include-item">100% en español</div>
+      <div class="pricing-include-item">Acceso de por vida</div>
+      <div class="pricing-include-item">Guía de errores comunes</div>
+      <div class="pricing-include-item">Entrega inmediata</div>
+    </div>
+
+    <a href="TU_LINK_DE_MERCADOPAGO_AQUÍ" class="btn-buy-large">
+      🛒 Comprar por USD 17 — Pago seguro con Mercado Pago
+    </a>
+
+    <div class="pricing-guarantee">
+      🔒 Pago 100% seguro · Entrega inmediata · Acceso de por vida
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ FAQ ══════════ -->
+<section class="faq-section reveal">
+  <div class="section-label">Preguntas frecuentes</div>
+  <h2 class="section-title">DUDAS<br><span class="gold">COMUNES</span></h2>
+
+  <div class="faq-item">
+    <div class="faq-q">¿Cómo recibo la calculadora después de pagar?</div>
+    <div class="faq-a">Inmediatamente después de confirmar el pago, te enviamos el link de acceso por Messenger. En menos de 5 minutos ya podés usarla.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">¿Funciona en mi celular?</div>
+    <div class="faq-a">Sí. ConstructPRO funciona en cualquier celular, tablet o computadora con internet. Incluso podés instalarla como app en tu teléfono sin necesidad de la Play Store.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">¿Es un pago único o una suscripción mensual?</div>
+    <div class="faq-a">Es un pago único de USD 17. Una sola vez y tenés acceso de por vida. Sin cuotas, sin sorpresas, sin renovaciones.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">¿Necesito saber mucho de tecnología para usarla?</div>
+    <div class="faq-a">Para nada. Está diseñada para constructores, no para programadores. Ingresás las medidas, apretás calcular y listo. Todo está en español y es muy intuitivo.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">¿Puedo usarla para presupuestar obras de clientes?</div>
+    <div class="faq-a">Sí, absolutamente. Podés hacer presupuestos detallados y exportarlos. Es perfecta para presentar a clientes de forma profesional.</div>
+  </div>
+</section>
+
+<!-- ══════════ FOOTER CTA ══════════ -->
+<div class="footer-cta reveal">
+  <h2 class="footer-cta-title">DEJÁ DE CALCULAR<br>A <span class="gold">OJO</span></h2>
+  <p class="footer-cta-sub">Empezá a presupuestar como un profesional desde hoy mismo.</p>
+  <a href="#comprar" class="btn-buy" style="display: inline-flex; font-size: 17px; padding: 18px 40px;">
+    <span>🛒 Quiero ConstructPRO — USD 17</span>
+  </a>
+</div>
+
+<footer>
+  <p>ConstructPRO · Herramienta profesional de construcción · Desarrollado en Argentina 🇦🇷</p>
+  <p style="margin-top: 8px;">Ante cualquier consulta escribinos por Messenger</p>
+</footer>
+
+<script>
+// Reveal on scroll
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1 });
+
+reveals.forEach(el => observer.observe(el));
+
+// Animate hero stats numbers
+function animateNumber(el, target, duration = 1500) {
+  let start = 0;
+  const step = target / (duration / 16);
+  const timer = setInterval(() => {
+    start += step;
+    if (start >= target) {
+      el.textContent = target + (el.dataset.suffix || '');
+      clearInterval(timer);
+    } else {
+      el.textContent = Math.floor(start) + (el.dataset.suffix || '');
+    }
+  }, 16);
+}
+</script>
+
+</body>
+</html>
